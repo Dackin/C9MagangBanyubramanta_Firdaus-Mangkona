@@ -18,6 +18,7 @@ int main(){
     cin >> N;
 
     VideoCapture cap(vids[N-1]);
+    //VideoCapture cap(0);
 
     namedWindow("trackbar", WINDOW_AUTOSIZE);
     
@@ -31,7 +32,7 @@ int main(){
     createTrackbar("Val Max", "trackbar", &valMax, satValMax);
 
     while (true){
-        Mat frame, framehsv;
+        Mat frame, framehsv, maskHSV1, maskHSV2, maskHSV, resultHSV;
 
         if(!cap.read(frame)){
             break;
@@ -40,15 +41,16 @@ int main(){
         //UBAH
         cvtColor(frame, framehsv, COLOR_BGR2HSV);
 
-        int hue = (int)hueMin1;
-        int thresh = (int)valMin;
+        Scalar minHSV1 = Scalar(hueMin1, satMin, valMin);
+        Scalar maxHSV1 = Scalar(hueMax1, satMax, valMax);
+        inRange(framehsv, minHSV1, maxHSV1, maskHSV1);
 
-        Scalar minHSV = Scalar(hue - thresh, hue - thresh, hue - thresh);
-        Scalar maxHSV = Scalar(hue + thresh, hue + thresh, hue + thresh);
+        Scalar minHSV2 = Scalar(hueMin2, satMin, valMin);
+        Scalar maxHSV2 = Scalar(hueMax2, satMax, valMax);
+        inRange(framehsv, minHSV2, maxHSV2, maskHSV2);
 
-        Mat maskHSV, resultHSV;
+        bitwise_or(maskHSV1, maskHSV2, maskHSV);
 
-        inRange(frame, minHSV, maxHSV, maskHSV);
         bitwise_and(frame, frame, resultHSV, maskHSV);
 
         imshow("hasil", resultHSV);
