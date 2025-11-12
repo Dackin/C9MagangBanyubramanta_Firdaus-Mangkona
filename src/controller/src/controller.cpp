@@ -22,7 +22,7 @@ class ControllNode : public rclcpp::Node{
 
 public:
   ControllNode() : Node("controllNode"){
-    publisher_= this->create_publisher<interfaces::msg::Custom>("custom_msg", 10);
+    publisher_= this->create_publisher<interfaces::msg::Custom>("cmd_vel", 10);
     subscription_ = this->create_subscription<sensor_msgs::msg::Joy>(
       "joy", 10, std::bind(&ControllNode::controllerCallback, this, std::placeholders::_1));
   }

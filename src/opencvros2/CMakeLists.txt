@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(controller)
+project(opencvros2)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,15 +8,23 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(interfaces REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(cv_bridge REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
-add_executable(controllNode src/controller.cpp)
-ament_target_dependencies(controllNode rclcpp sensor_msgs interfaces)
+#isi tambahan
+add_executable(opencvros2Node src/opencvros2.cpp)
+ament_target_dependencies(opencvros2Node rclcpp image_transport cv_bridge sensor_msgs OpenCV ament_index_cpp)
 #
 install(
-TARGETS controllNode
+TARGETS opencvros2Node
 DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY resource/
+  DESTINATION share/${PROJECT_NAME}/resource
 )
 
 if(BUILD_TESTING)
