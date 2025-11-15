@@ -9,5 +9,8 @@ Membuat node controlleNode yang dimana akan sub ke joyNode dan akan publish ke c
 Week 2 OpenCV:
 Membuat program opencv yang dapat mendeteksi warna objek dalam video
 
-Wekk 3 ROS2-OpenCV-YOLO:
+Week 3 ROS2-OpenCV-YOLO:
 Mengintegrasikan Opencvy-YOLO dengan menggunakan ROS2 untuk dapat masking video lalu deteksi objek dari node ke node
+
+Week 4 Serial Communication:
+Mengintegrasikan ROS2 dengan serial communication
