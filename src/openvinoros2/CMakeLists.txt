@@ -18,9 +18,11 @@ find_package(OpenCV REQUIRED)
 
 include_directories(include)
 
+include_directories(${OpenCV_INCLUDE_DIRS} ${OpenVINO_INCLUDE_DIRS})
+
 add_executable(object_detection_node src/openvinoros2.cpp)
-ament_target_dependencies(object_detection_node 
-  rclcpp sensor_msgs cv_bridge interfaces)
+ament_target_dependencies(object_detection_node rclcpp sensor_msgs cv_bridge interfaces)
+
 target_link_libraries(object_detection_node 
   ${OpenCV_LIBS}
   openvino::runtime
