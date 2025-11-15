@@ -54,9 +54,6 @@ const float color_list[80][3] = {
     {0.714, 0.714, 0.714}, {0.857, 0.857, 0.857}, {0.000, 0.447, 0.741},
     {0.314, 0.717, 0.741}, {0.50, 0.5, 0}};
 
-// ============================================================================
-// Config Structure
-// ============================================================================
 struct Config {
     float confThreshold;
     float nmsThreshold;
@@ -66,27 +63,18 @@ struct Config {
     std::string onnx_path;
 };
 
-// ============================================================================
-// Resize Structure
-// ============================================================================
 struct Resize {
     cv::Mat resized_image;
     int dw;
     int dh;
 };
 
-// ============================================================================
-// Detection Structure
-// ============================================================================
 struct Detection {
     int class_id;
     float confidence;
     cv::Rect box;
 };
 
-// ============================================================================
-// YOLOV5 Class
-// ============================================================================
 class YOLOV5 {
    public:
     YOLOV5(Config config);
@@ -312,9 +300,6 @@ void YOLOV5::draw_detections(cv::Mat& frame, const std::vector<Detection>& detec
     }
 }
 
-// ============================================================================
-// ROS2 Node
-// ============================================================================
 class ObjectDetectionNode : public rclcpp::Node {
    public:
     ObjectDetectionNode() : Node("object_detection") {
@@ -325,7 +310,7 @@ class ObjectDetectionNode : public rclcpp::Node {
             SCORE_THRESH,   // scoreThreshold
             INPUT_WIDTH,    // inpWidth
             INPUT_HEIGHT,   // inpHeight
-            "/home/dackin/dev/BanyuBramanta/C9MagangBanyubramanta_Firdaus-Mangkona/src/openvinoros2/include/Taqi.onnx"  // onnx_path
+            "src/openvinoros2/models/Taqi.onnx"  // onnx_path
         };
         
         try {
@@ -396,9 +381,6 @@ class ObjectDetectionNode : public rclcpp::Node {
     rclcpp::Publisher<interfaces::msg::Object>::SharedPtr object_pub_;
 };
 
-// ============================================================================
-// Main
-// ============================================================================
 int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);
     rclcpp::spin(std::make_shared<ObjectDetectionNode>());
