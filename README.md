@@ -13,4 +13,7 @@ Week 3 ROS2-OpenCV-YOLO:
 Mengintegrasikan Opencvy-YOLO dengan menggunakan ROS2 untuk dapat masking video lalu deteksi objek dari node ke node
 
 Week 4 Serial Communication:
-Mengintegrasikan ROS2 dengan serial communication
+Mengintegrasikan ROS2 controller(Controll Node) dengan serial communication
+
+Week 4 Gazeebo:
+Mengintegrasikan ROS2 controller(Controll Node) dengan gazeebo simulation
