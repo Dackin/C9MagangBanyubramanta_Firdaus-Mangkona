@@ -4,13 +4,11 @@ Repositori ini berisi kumpulan proyek dan tugas yang diselesaikan selama program
 
 ---
 
-## 📚 Ringkasan Proyek
-
 Berikut adalah rincian pekerjaan yang diselesaikan setiap minggunya, beserta lokasi kode di dalam repositori ini.
 
 ### Minggu 1: Kontroler Dasar ROS 2
 * **Lokasi:** `src/controller`
-* **Deskripsi:** Membuat node ROS 2 (`controllerNode`) yang berfungsi sebagai jembatan antara input joystick dan kontrol robot. Node ini berlangganan (subscribe) ke topik dari `joyNode` (input joystick) dan mempublikasikan (publish) pesan `geometry_msgs/Twist` ke topik `/cmd_vel` untuk menggerakkan robot.
+* **Deskripsi:** Membuat node ROS 2 (`controllerNode`) yang berfungsi sebagai jembatan antara input joystick dan kontrol robot. Node ini berlangganan (subscribe) ke topik dari `joyNode` (input joystick) dan mempublikasikan (publish) pesan `Object.msg` ke topik `/cmd_vel` untuk menggerakkan robot.
 
 ### Minggu 2: Deteksi Warna OpenCV
 * **Lokasi:** `opencv/`
@@ -36,13 +34,3 @@ Pada minggu keempat, fokusnya adalah menghubungkan node kontroler yang dibuat pa
     * **Deskripsi:** Menghubungkan `controllerNode` ROS 2 dengan robot virtual di dalam simulasi Gazebo. Ini memungkinkan pengujian logika kontrol dan fungsionalitas node dalam lingkungan virtual yang aman dan terkendali sebelum diterapkan pada robot fisik.
 
 ---
-
-## 🛠️ Teknologi Utama yang Digunakan
-
-* **ROS 2:** Kerangka kerja utama untuk komunikasi antar node.
-* **C++ & Python:** Bahasa pemrograman yang digunakan untuk menulis node ROS 2 dan skrip OpenCV.
-* **OpenCV:** Library utama untuk tugas-tugas computer vision (deteksi warna, masking).
-* **YOLO & OpenVINO:** Model dan toolkit untuk deteksi objek (object detection).
-* **Gazebo:** Platform simulasi robotika 3D.
-* **Boost.Asio / `pyserial`:** Library untuk menangani komunikasi serial.
-* **`colcon` & `CMake`:** Sistem build untuk kompilasi package ROS 2.
