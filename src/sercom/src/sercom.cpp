@@ -36,7 +36,7 @@ public:
 
         try {
             serial_.open(port);
-            serial_.set_option(boost::asio::serial_port_base::baud_rate(115200));
+            serial_.set_option(boost::asio::serial_port_base::baud_rate(9600));
         }
         catch (std::exception &e) {
             RCLCPP_ERROR(this->get_logger(), "Failed to open serial: %s", e.what());
