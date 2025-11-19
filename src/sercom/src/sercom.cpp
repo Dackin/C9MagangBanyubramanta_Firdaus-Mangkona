@@ -7,32 +7,29 @@
 #include "rclcpp/rclcpp.hpp"
 #include "interfaces/msg/custom.hpp"
 
-// Gunakan struct untuk memastikan urutan data dan ukuran 16 byte
+// Struct ControlFrame sesuai dengan STM32 (Total 16 Byte)
 struct ControlFrame {
-    // Kita hanya akan mengisi 6 nilai int16_t pertama (12 byte)
-    // dan membiarkan 4 byte sisanya kosong/nol, sehingga total 16 byte
-    int16_t thrust_dr; // rxBuffer[0], rxBuffer[1]
-    int16_t thrust_dl; // rxBuffer[2], rxBuffer[3] <-- Kita akan fokus di sini (pakai 'y')
-    int16_t thrust_tr; // rxBuffer[4], rxBuffer[5]
-    int16_t thrust_tl; // rxBuffer[6], rxBuffer[7]
-    int16_t thrust_br; // rxBuffer[8], rxBuffer[9]
-    int16_t thrust_bl; // rxBuffer[10], rxBuffer[11]
-    int16_t unused_1;  // rxBuffer[12], rxBuffer[13]
-    int16_t unused_2;  // rxBuffer[14], rxBuffer[15]
-} __attribute__((packed)); // Penting: memastikan compiler tidak menambah padding
+    int16_t thrust_dr; // Down Right (Vertical)
+    int16_t thrust_dl; // Down Left (Vertical)
+    int16_t thrust_tr; // Top Right (Horizontal - Front Right?)
+    int16_t thrust_tl; // Top Left (Horizontal - Front Left?)
+    int16_t thrust_br; // Bottom Right (Horizontal - Back Right?)
+    int16_t thrust_bl; // Bottom Left (Horizontal - Back Left?)
+    int16_t unused_1;  
+    int16_t unused_2;  
+} __attribute__((packed));
 
 using std::placeholders::_1;
 
 class SercomNode : public rclcpp::Node
 {
 public:
-    // ... (Konstruktor sama, inisialisasi serial port)
     SercomNode()
     : Node("sercom_node"),
       io_(),
       serial_(io_)
     {
-        std::string port = "/dev/ttyUSB0"; // Default port
+        std::string port = "/dev/ttyUSB0"; // Pastikan port sesuai
 
         try {
             serial_.open(port);
@@ -42,44 +39,66 @@ public:
             RCLCPP_ERROR(this->get_logger(), "Failed to open serial: %s", e.what());
         }
 
+        // Subscribe ke cmd_vel
         subs = this->create_subscription<interfaces::msg::Custom>(
             "/cmd_vel",
             10,
             std::bind(&SercomNode::callbackCmd, this, _1)
         );
     }
+
 private:
     void callbackCmd(const interfaces::msg::Custom::SharedPtr msg)
     {
-        ControlFrame data_to_send = {0}; // Inisialisasi semua ke nol
+        ControlFrame data_to_send = {0};
 
-        // Fokus: Gunakan nilai Y (msg->y) untuk menggerakkan Thruster Depan Kiri (thrust_dl)
-        // Thruster Depan Kiri menggunakan rxBuffer[2] dan rxBuffer[3] di STM32
-        data_to_send.thrust_dl = static_cast<int16_t>(msg->y); 
+        // 1. Ambil data dari Controller (interfaces/msg/Custom)
+        int16_t input_x = static_cast<int16_t>(msg->x);     // Surge (Maju/Mundur)
+        int16_t input_y = static_cast<int16_t>(msg->y);     // Sway (Kanan/Kiri)
+        int16_t input_yaw = static_cast<int16_t>(msg->yaw); // Yaw (Putar)
         
-        // Thruster lainnya diatur ke 1500 (nilai netral setelah dikonversi di STM32)
-        // Anda bisa set ke 0 di sini, karena 0 di ROS -> 1500 di STM32
-        data_to_send.thrust_dr = 0; 
-        data_to_send.thrust_tr = 0; 
-        data_to_send.thrust_tl = 0; 
-        data_to_send.thrust_br = 0; 
-        data_to_send.thrust_bl = 0; 
+        // Catatan: Di controller.cpp, depth range-nya 0-10. 
+        // Jika STM32 butuh nilai PWM besar, kalikan di sini. 
+        // Misal dikali 50 agar range menjadi 0-500.
+        int16_t input_depth = static_cast<int16_t>(msg->depth * 50); 
+
+        // 2. MIXING ALGORITHM (Kinematics)
+        // Logika ini menggabungkan X, Y, Yaw ke 4 motor horizontal
+        // Dan Depth ke 2 motor vertikal.
+        // Tanda (+/-) harus disesuaikan dengan arah putaran baling-baling robot Anda.
+
+        // --- Horizontal Thrusters (Asumsi konfigurasi X-Config / Vectored) ---
+        // Front Left (TL)  = Maju + Geser Kanan + Putar Kanan
+        data_to_send.thrust_tl = input_x + input_y + input_yaw; 
         
-        // Kirim 16 byte biner
+        // Front Right (TR) = Maju - Geser Kanan - Putar Kanan
+        data_to_send.thrust_tr = input_x - input_y - input_yaw;
+
+        // Back Left (BL)   = Maju - Geser Kanan + Putar Kanan
+        data_to_send.thrust_bl = input_x - input_y + input_yaw;
+
+        // Back Right (BR)  = Maju + Geser Kanan - Putar Kanan
+        data_to_send.thrust_br = input_x + input_y - input_yaw;
+
+        // --- Vertical Thrusters (Depth) ---
+        // Menggerakkan robot ke atas/bawah
+        data_to_send.thrust_dl = input_depth; // Down Left
+        data_to_send.thrust_dr = input_depth; // Down Right
+
+        // 3. Kirim Data ke STM32 via Serial
         size_t sent_bytes = boost::asio::write(serial_, 
             boost::asio::buffer(&data_to_send, sizeof(ControlFrame)));
 
-        // Output log untuk debugging
+        // 4. Logging untuk Debugging
         RCLCPP_INFO(this->get_logger(), 
-            "Sent %zu bytes. Y: %d -> DL: %d", 
-            sent_bytes, msg->y, data_to_send.thrust_dl);
+            "In[X:%d Y:%d Z:%d Yaw:%d] -> Out[TL:%d TR:%d BL:%d BR:%d DL:%d]", 
+            input_x, input_y, msg->depth, input_yaw,
+            data_to_send.thrust_tl, data_to_send.thrust_tr,
+            data_to_send.thrust_bl, data_to_send.thrust_br, data_to_send.thrust_dl);
     }
 
-    // ASIO
     boost::asio::io_context io_;
     boost::asio::serial_port serial_;
-
-    // Subscription
     rclcpp::Subscription<interfaces::msg::Custom>::SharedPtr subs;
 };
 
