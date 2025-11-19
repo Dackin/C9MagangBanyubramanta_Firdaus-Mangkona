@@ -22,7 +22,7 @@ Minggu kedua fokus pada pengolahan citra menggunakan **OpenCV**, meliputi:
 
 ---
 
-### 📌 Week 3 – ROS2 + OpenCV + YOLO Integration
+### Week 3 – ROS2 + OpenCV + YOLO Integration
 Integrasi lanjutan antara ROS2 dan computer vision:
 - Menggabungkan OpenCV dan YOLO untuk mendeteksi objek
 - Melakukan masking video
