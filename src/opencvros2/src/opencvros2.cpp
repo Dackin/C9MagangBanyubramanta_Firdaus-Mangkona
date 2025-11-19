@@ -35,7 +35,7 @@ class opencvros2Node : public rclcpp::Node{
             createTrackbar("Val Min", "trackbar", &valMin, 255);
             createTrackbar("Val Max", "trackbar", &valMax, 255);
     
-            cap_.open("src/opencvros2/resource/second.mp4"); // Ganti dengan 0 untuk webcam
+            cap_.open("src/opencvros2/resource/third.mp4"); // Ganti dengan 0 untuk webcam
             if(!cap_.isOpened()){
                 RCLCPP_ERROR(this->get_logger(), "Error opening video stream or file");
                 //rclcpp ::shutdown(); 
@@ -90,7 +90,7 @@ class opencvros2Node : public rclcpp::Node{
                 publisher_raw.publish(*raw_msg);
 
                 sensor_msgs::msg::Image::SharedPtr mask_msg;
-                mask_msg = cv_bridge::CvImage(header, "mono8", resultHSV).toImageMsg();
+                mask_msg = cv_bridge::CvImage(header, "bgr8", resultHSV).toImageMsg();
                 publisher_mask.publish(*mask_msg);
             }
         }

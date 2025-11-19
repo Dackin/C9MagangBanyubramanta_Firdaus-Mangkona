@@ -14,6 +14,8 @@ find_package(sensor_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 
+include_directories(include)
+
 #isi tambahan
 add_executable(opencvros2Node src/opencvros2.cpp)
 ament_target_dependencies(opencvros2Node rclcpp image_transport cv_bridge sensor_msgs OpenCV ament_index_cpp)
@@ -21,10 +23,6 @@ ament_target_dependencies(opencvros2Node rclcpp image_transport cv_bridge sensor
 install(
 TARGETS opencvros2Node
 DESTINATION lib/${PROJECT_NAME}
-)
-
-install(DIRECTORY resource/
-  DESTINATION share/${PROJECT_NAME}/resource
 )
 
 if(BUILD_TESTING)

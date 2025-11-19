@@ -47,9 +47,10 @@ private:
 
     void controllerCallback(const sensor_msgs::msg::Joy &msg){
 
-      x = (-1 * msg.axes[0] * 250);
-      y = (msg.axes[1] * 250);
-      depth = nilaiSekarang(-1 * msg.axes[4], maxDepth, minDepth, depth);
+      // FIXED: axes[0] untuk X (samping), axes[1] untuk Y (maju/mundur)
+      y = (msg.axes[0] * 250);        // Stick kiri horizontal -> X (kiri/kanan)
+      x = (msg.axes[1] * 250);        // Stick kiri vertikal -> Y (maju/mundur)
+      depth = nilaiSekarang(msg.axes[4], maxDepth, minDepth, depth);
       yaw = nilaiSekarang(-1 * msg.axes[3], maxYaw, minYaw, yaw);
       pesan = nilaiPesan(msg.buttons[0]);
 

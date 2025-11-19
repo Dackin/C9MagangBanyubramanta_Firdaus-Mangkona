@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(interfaces)
+project(sercom)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,13 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(interfaces)
+find_package(Boost REQUIRED COMPONENTS system)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-    "msg/Custom.msg"
-    "msg/Object.msg"
-    DEPENDENCIES std_msgs
+add_executable(coms src/sercom.cpp)
+ament_target_dependencies(coms rclcpp std_msgs interfaces Boost)
+
+install( TARGETS
+  coms
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

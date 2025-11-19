@@ -1,6 +1,7 @@
 build/
 install/
 log/
-
 .vscode/
-opencv/*.mp4
+
+# Ignore semua file mp4 di folder manapun (tambahkan bintang ganda)
+**/*.mp4    
