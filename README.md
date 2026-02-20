@@ -6,23 +6,23 @@ Repositori ini berisi rangkuman proyek dan tugas saya selama mengikuti program m
 flowchart TD
     %% --- Definisi Gaya (Styling) ---
 
-    %% Style BARU untuk hardware: Lingkaran Kuning, Teks Hitam
-    classDef hardwareCircle fill:#fff700, stroke:#d4a000, stroke-width:2px, color:#000000, font-weight:bold
+    %% Style BARU: Bingkai Merah, Isi Transparan, Teks Putih
+    classDef hardwareBox fill:transparent, stroke:#ff4444, stroke-width:3px, color:#ffffff
 
-    %% Style untuk elemen lainnya (Topic, Software, Node ROS)
+    %% Style untuk elemen lainnya (Topic & Software)
     classDef topic fill:none, stroke:none, color:#4488ff, font-weight:bold
     classDef software fill:none, stroke:none, color:#44dd44, font-weight:bold
     
-    %% Menggunakan warna teks putih agar kontras di dark mode
+    %% Style standar untuk Node ROS (bingkai abu-abu)
     classDef nodeBox fill:transparent, stroke:#889, stroke-width:2px, color:#ffffff
 
     %% --- Definisi Node ---
 
-    %% Hardware didefinisikan sebagai lingkaran dengan ((...))
-    Joystick((Joystick)):::hardwareCircle
-    STM32((STM 32)):::hardwareCircle
-    Thruster((Thruster)):::hardwareCircle
-    Camera((Camera)):::hardwareCircle
+    %% Hardware: Bentuk bingkai melengkung dengan warna merah
+    Joystick(["Joystick"]):::hardwareBox
+    STM32(["STM 32"]):::hardwareBox
+    Thruster(["Thruster"]):::hardwareBox
+    Camera(["Camera"]):::hardwareBox
 
     %% Node Topic (Teks Biru)
     Joy_Node["Joy_Node"]:::topic
@@ -35,11 +35,10 @@ flowchart TD
     %% Node Software (Teks Hijau)
     MicroROS["Micro-ROS"]:::software
 
-    %% Node ROS (Kotak rounded, Teks Putih)
+    %% Node ROS standar (Kotak rounded, bingkai abu-abu)
     MissionPlanner(["Mission Planner<br>w/ Behavior Tree"]):::nodeBox
     OpenVino(["OpenVino<br>(obj detect)"]):::nodeBox
     OpenCV(["OpenCV<br>(color detect)"]):::nodeBox
-
 
     %% --- Koneksi / Alur Flowchart ---
     Joystick --> Joy_Node
@@ -65,7 +64,7 @@ flowchart TD
     STM32 --> Thruster
 ```
 
----
+
 
 ## Ringkasan Mingguan
 
