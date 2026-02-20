@@ -12,7 +12,8 @@ flowchart TD
     %% Style untuk elemen lainnya (Topic, Software, Node ROS)
     classDef topic fill:none, stroke:none, color:#4488ff, font-weight:bold
     classDef software fill:none, stroke:none, color:#44dd44, font-weight:bold
-    % Menggunakan warna teks putih agar kontras di dark mode
+    
+    %% Menggunakan warna teks putih agar kontras di dark mode
     classDef nodeBox fill:transparent, stroke:#889, stroke-width:2px, color:#ffffff
 
     %% --- Definisi Node ---
@@ -48,6 +49,8 @@ flowchart TD
     OpenVino --> detected_obj
     detected_obj --> ROV_AUV
 
+    Camera --> image_raw
+
     image_raw --> OpenVino
     image_raw --> OpenCV
 
@@ -57,10 +60,9 @@ flowchart TD
     MissionPlanner --> cmd_vel
     cmd_vel --> MicroROS
 
-    %% Alur ke Hardware (tanpa subgraph)
+    %% Alur ke Hardware
     MicroROS --> STM32
     STM32 --> Thruster
-    Camera --> image_raw
 ```
 
 ---
