@@ -4,37 +4,43 @@ Repositori ini berisi rangkuman proyek dan tugas saya selama mengikuti program m
 
 ```mermaid
 flowchart TD
-    %% Definisi Gaya (Styling)
-    classDef hardware fill:none, stroke:none, color:#ff4444, font-weight:bold
+    %% --- Definisi Gaya (Styling) ---
+
+    %% Style BARU untuk hardware: Lingkaran Kuning, Teks Hitam
+    classDef hardwareCircle fill:#fff700, stroke:#d4a000, stroke-width:2px, color:#000000, font-weight:bold
+
+    %% Style untuk elemen lainnya (Topic, Software, Node ROS)
     classDef topic fill:none, stroke:none, color:#4488ff, font-weight:bold
     classDef software fill:none, stroke:none, color:#44dd44, font-weight:bold
+    % Menggunakan warna teks putih agar kontras di dark mode
     classDef nodeBox fill:transparent, stroke:#889, stroke-width:2px, color:#ffffff
 
-    %% Definisi Node & Topic
-    Joystick["Joystick"]:::hardware
+    %% --- Definisi Node ---
+
+    %% Hardware didefinisikan sebagai lingkaran dengan ((...))
+    Joystick((Joystick)):::hardwareCircle
+    STM32((STM 32)):::hardwareCircle
+    Thruster((Thruster)):::hardwareCircle
+    Camera((Camera)):::hardwareCircle
+
+    %% Node Topic (Teks Biru)
     Joy_Node["Joy_Node"]:::topic
     ROV_AUV["ROV/AUV ?"]:::topic
-    MissionPlanner(["Mission Planner<br>w/ Behavior Tree"]):::nodeBox
-
-    OpenVino(["OpenVino<br>(obj detect)"]):::nodeBox
     detected_obj["detected_obj"]:::topic
-
-    OpenCV(["OpenCV<br>(color detect)"]):::nodeBox
     masked_obj["masked_obj"]:::topic
-
     image_raw["image_raw"]:::topic
     cmd_vel["cmd_vel"]:::topic
+
+    %% Node Software (Teks Hijau)
     MicroROS["Micro-ROS"]:::software
 
-    %% Grup STM 32 (Lingkaran Merah)
-    subgraph STM32_Group [" "]
-        direction TB
-        STM32["STM 32"]:::hardware --> Thruster["Thruster"]:::hardware
-        Camera["Camera"]:::hardware
-    end
-    style STM32_Group fill:none, stroke:#ff4444, stroke-width:3px, rx:50, ry:50
+    %% Node ROS (Kotak rounded, Teks Putih)
+    MissionPlanner(["Mission Planner<br>w/ Behavior Tree"]):::nodeBox
+    OpenVino(["OpenVino<br>(obj detect)"]):::nodeBox
+    OpenCV(["OpenCV<br>(color detect)"]):::nodeBox
 
-    %% Koneksi / Alur Flowchart
+
+    %% --- Koneksi / Alur Flowchart ---
     Joystick --> Joy_Node
     Joy_Node --> ROV_AUV
     ROV_AUV --> MissionPlanner
@@ -51,9 +57,12 @@ flowchart TD
     MissionPlanner --> cmd_vel
     cmd_vel --> MicroROS
 
+    %% Alur ke Hardware (tanpa subgraph)
     MicroROS --> STM32
+    STM32 --> Thruster
     Camera --> image_raw
 ```
+
 ---
 
 ## Ringkasan Mingguan
