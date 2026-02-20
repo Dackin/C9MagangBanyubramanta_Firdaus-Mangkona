@@ -2,6 +2,7 @@
 
 Repositori ini berisi rangkuman proyek dan tugas saya selama mengikuti program magang di **Banyubramanta**. Setiap minggu berfokus pada integrasi teknologi seperti ROS2, OpenCV, YOLO, serial communication, dan simulasi Gazebo.
 
+```mermaid
 flowchart TD
     IMU:::sensor --> VectorNav:::package
     VectorNav --> |Orientation| SensorFusion[Sensor Fusion]:::package
@@ -29,7 +30,7 @@ flowchart TD
     Sonar --> |Object Poses| TaskPlanning
 
     Hydrophones:::sensor --> Acoustics:::package
-    Acoustics --> |Pinger Positions| TaskPlanning
+    Acoutics --> |Pinger Positions| TaskPlanning
 
     TaskPlanning --> |Desired State| Controls
     TaskPlanning --> |Servo Commands| OffboardCommsOut[Offboard Comms]:::package
@@ -45,6 +46,7 @@ flowchart TD
     classDef package fill:#00c, color:#fff
     classDef outputs fill:#080, color:#fff
     classDef intermediateHardware fill:#990, color:#fff
+```
 
 ---
 
