@@ -4,50 +4,56 @@ Repositori ini berisi rangkuman proyek dan tugas saya selama mengikuti program m
 
 ```mermaid
 flowchart TD
-    IMU:::sensor --> VectorNav:::package
-    VectorNav --> |Orientation| SensorFusion[Sensor Fusion]:::package
-    VectorNav --> |Angular Velocity| SensorFusion
+    %% Definisi Gaya (Styling)
+    classDef hardware fill:none, stroke:none, color:#ff4444, font-weight:bold
+    classDef topic fill:none, stroke:none, color:#4488ff, font-weight:bold
+    classDef software fill:none, stroke:none, color:#44dd44, font-weight:bold
+    classDef nodeBox fill:transparent, stroke:#889, stroke-width:2px, color:#ffffff
 
-    PressureSensor[Pressure Sensor]:::sensor --> PeripheralArduinoIn[Peripheral Arduino]:::intermediateHardware
-    Voltage[Voltage Sensor]:::sensor --> PeripheralArduinoIn
+    %% Definisi Node & Topic
+    Joystick["Joystick"]:::hardware
+    Joy_Node["Joy_Node"]:::topic
+    ROV_AUV["ROV/AUV ?"]:::topic
+    MissionPlanner(["Mission Planner<br>w/ Behavior Tree"]):::nodeBox
 
-    DVL:::sensor --> OffboardCommsIn[Offboard Comms]:::package
-    Gyro:::sensor --> OffboardCommsIn[Offboard Comms]:::package
-    IVC:::sensor --> OffboardCommsIn[Offboard Comms]:::package
-    PeripheralArduinoIn --> |Depth| OffboardCommsIn
-    PeripheralArduinoIn --> |Voltage| OffboardCommsIn
+    OpenVino(["OpenVino<br>(obj detect)"]):::nodeBox
+    detected_obj["detected_obj"]:::topic
 
-    OffboardCommsIn --> |Linear Velocity| SensorFusion
-    OffboardCommsIn --> |Depth| SensorFusion
+    OpenCV(["OpenCV<br>(color detect)"]):::nodeBox
+    masked_obj["masked_obj"]:::topic
 
-    FrontCamera[Front Camera]:::sensor --> CV[Computer Vision]:::package
-    BottomCamera[Bottom Camera]:::sensor --> CV
+    image_raw["image_raw"]:::topic
+    cmd_vel["cmd_vel"]:::topic
+    MicroROS["Micro-ROS"]:::software
 
-    SensorFusion --> |State| Controls:::package
-    SensorFusion --> |State| TaskPlanning[Task Planning]:::package
-    CV --> |Object Detections| TaskPlanning
-    Ping360:::sensor --> Sonar:::package
-    Sonar --> |Object Poses| TaskPlanning
+    %% Grup STM 32 (Lingkaran Merah)
+    subgraph STM32_Group [" "]
+        direction TB
+        STM32["STM 32"]:::hardware --> Thruster["Thruster"]:::hardware
+        Camera["Camera"]:::hardware
+    end
+    style STM32_Group fill:none, stroke:#ff4444, stroke-width:3px, rx:50, ry:50
 
-    Hydrophones:::sensor --> Acoustics:::package
-    Acoutics --> |Pinger Positions| TaskPlanning
+    %% Koneksi / Alur Flowchart
+    Joystick --> Joy_Node
+    Joy_Node --> ROV_AUV
+    ROV_AUV --> MissionPlanner
 
-    TaskPlanning --> |Desired State| Controls
-    TaskPlanning --> |Servo Commands| OffboardCommsOut[Offboard Comms]:::package
-    Controls --> |Thruster Allocations| OffboardCommsOut
-    OffboardCommsOut --> |Pulse Widths| ThrusterArduino[Thruster Arduino]:::intermediateHardware
-    OffboardCommsOut --> |Servo Angles| PeripheralArduinoOut[Peripheral Arduino]:::intermediateHardware
-    ThrusterArduino --> Thrusters:::outputs
+    OpenVino --> detected_obj
+    detected_obj --> ROV_AUV
 
-    PeripheralArduinoOut --> MarkerDropperServo[Marker Dropper Servo]:::outputs
-    PeripheralArduinoOut --> TorpedoServo[Torpedo Servo]:::outputs
+    image_raw --> OpenVino
+    image_raw --> OpenCV
 
-    classDef sensor fill:#d94, color:#fff
-    classDef package fill:#00c, color:#fff
-    classDef outputs fill:#080, color:#fff
-    classDef intermediateHardware fill:#990, color:#fff
+    OpenCV --> masked_obj
+    masked_obj --> MissionPlanner
+
+    MissionPlanner --> cmd_vel
+    cmd_vel --> MicroROS
+
+    MicroROS --> STM32
+    Camera --> image_raw
 ```
-
 ---
 
 ## Ringkasan Mingguan
